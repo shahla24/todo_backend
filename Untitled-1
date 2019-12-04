@@ -1,0 +1,7 @@
+
+const connection = mysql.createConnection({
+  host: "todolist.cjrdwjswyvfe.eu-west-2.rds.amazonaws.com",
+  user: "stem",
+  password: "Hospital786",
+  database: "mytodolist"
+});
