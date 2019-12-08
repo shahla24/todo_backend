@@ -8,12 +8,12 @@ const uuidv4 = require('uuid/v4');
 
 const app = express();
 app.use(cors());
-app.use (bodyParser.json());
+app.use(bodyParser.json());
 
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
-  user:process.env.DB_USER ,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: "mytodolist"
 });
@@ -21,7 +21,7 @@ const connection = mysql.createConnection({
 
 
 app.get("/tasks", function (request, response) {
-  connection.query("SELECT * FROM task", function(err, data) {
+  connection.query("SELECT * FROM task", function (err, data) {
     if (err) {
       console.log("Error fetching tasks", err);
       response.status(500).json({
@@ -33,52 +33,8 @@ app.get("/tasks", function (request, response) {
       });
     }
   });
-
 });
 
-// app.post("/tasks", function (request, response) {
- 
-//   connection.query('INSERT INTO tasks SET ?', {id: "0001", taskDescription: "Distribution of catalogue", completed: "true", dateCreated: "2019-11-05", userId: "1"}, function (error, results, fields) {
-//     if (err) { 
-//     console.log("Error posting tasks", err);
-//     response.status(500).json({
-//       error: err
-//     });
-//   } else {
-//     response.json({
-//       tasks: fields
-//     })
-//   }
-// })
-// });
-
-
-// app.post("/tasks", function (request, response) {
-//   // create new task in the database
-//   const task = request.body;
-//   // {values needed: taskId, taskDescription,  completed, dateCreated, userId}
-//   const q = "INSERT INTO task (taskId, taskDescription, dateCreated, completed, userId) VALUES (?, ?, ?, ?,?)";
-//   connection.query(q, [task.taskId, task.taskDescription, task.dateCreated, task.completed, task.userId], function (err, data) {
-//     if (err) {
-//       response.status(500).json({error: err});
-//     } else {
-//       response.sendStatus(201);
-//     }
-//   })
-// })
-
-// app.post("/tasks", function(request, response){
-//   //Create a new task
-//   const task = request.body;
-//   const q = "INSERT tasks SET taskId = ?, taskDescription = ?, completed = ?, dateCreated = ?, userId = ? ";
-//   connection.query(q, [task.taskId, task.taskDescription, task.completed, task.dateCreated, task.userId ], function (err, data){
-//     if(err){
-//       response.status(500).json({error: err});
-//     }else{
-//       response.status(201).send("Created a new task with text: "+task.taskText);
-//     }
-//   })
-// });
 
 app.post("/tasks", function (request, response) {
   const taskId = request.params.taskId;
@@ -105,49 +61,48 @@ app.post("/tasks", function (request, response) {
 });
 
 
-
-// app.delete("/tasks/:taskId", function (request, response) {
-//   connection.query("DELETE FROM task WHERE id = '0001'", function(err, result, fields) {
-//     if (err) {
-//       console.log("Error deleting tasks", err);
-//       response.status(500).json({
-//         error: err
-//       });
-//     } else {
-//       response.json({
-//         tasks: result
-//       })
-//     }
-//   })
-//   });
-
-  app.delete("/tasks/:id", function (request, response) {
-    const taskId = request.params.taskId;
-    connection.query("DELETE FROM task WHERE taskId = ?", [taskId], function (err,data){
-      if (err) {
-        console.log("Error deleting task with taskId", err);
-        response.status(500).json({
-          error: err
-        });
-      } else {
-        console.log("Deleted task with Id "+ taskId)
-        response.status(200).send({
-          tasks: data
-        });
-      }
-    });
+app.delete("/tasks/:id", function (request, response) {
+  const taskId = request.params.taskId;
+  connection.query("DELETE FROM task WHERE taskId = ? ", [taskId], function (err, data) {
+    if (err) {
+      console.log("Error deleting task with taskId", err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      console.log("Deleted task with taskId " + taskId)
+      response.status(200).send({
+        tasks: data
+      });
+    }
   });
-
-
-
-
-
+});
 
 app.put("/tasks/:taskId", function (request, response) {
   const taskId = request.params.taskId;
-  const updatedTask = request.body;
-  response.status(200).send("Updated task with id " + taskId + "with" + task.text + task.completed);
+  const updatedTask = request.body.taskDescription;
+  connection.query("UPDATE task SET completed = ? WHERE taskId = ?", [0, taskId], function (err, data) {
+    if (err) {
+      console.log("Error updating task with id " + taskId, err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      console.log(updatedTask.insertId)
+      response.status(200).send({
+        tasks: data
+      })
+    }
+  });
 });
+
+
+
+
+
+
+
+
 
 
 
