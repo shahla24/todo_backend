@@ -53,6 +53,7 @@ app.post("/tasks", function (request, response) {
       });
     } else {
       console.log("Created task with id " + taskId);
+      //console.log("Created task with taskId " + taskId);
       response.status(201).send({
         tasks: data
       });
@@ -61,7 +62,7 @@ app.post("/tasks", function (request, response) {
 });
 
 
-app.delete("/tasks/:id", function (request, response) {
+app.delete("/tasks/:taskId", function (request, response) {
   const taskId = request.params.taskId;
   connection.query("DELETE FROM task WHERE taskId = ? ", [taskId], function (err, data) {
     if (err) {
@@ -81,6 +82,7 @@ app.delete("/tasks/:id", function (request, response) {
 app.put("/tasks/:taskId", function (request, response) {
   const taskId = request.params.taskId;
   const updatedTask = request.body.taskDescription;
+  //const updatedTask = request.body.text;
   connection.query("UPDATE task SET completed = ? WHERE taskId = ?", [0, taskId], function (err, data) {
     if (err) {
       console.log("Error updating task with id " + taskId, err);
@@ -95,15 +97,6 @@ app.put("/tasks/:taskId", function (request, response) {
     }
   });
 });
-
-
-
-
-
-
-
-
-
 
 
 module.exports.tasks = serverlessHttp(app);
