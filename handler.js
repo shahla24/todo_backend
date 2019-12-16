@@ -79,11 +79,32 @@ app.delete("/tasks/:taskId", function (request, response) {
   });
 });
 
+// app.delete("/tasks/:taskId", function (request, response) {
+//   const taskId = request.params.taskId;
+
+//   const sql = 'DELETE FROM task WHERE taskId = ?';
+
+//     connection.query(sql, [taskId], (err, results, fields) => {
+
+//     if (err) {
+//       console.log("Error deleting tasks", err);
+//       response.status(500).json({
+//         error: err
+//       });
+//     } else {
+//       response.status(200).json('Removal done');
+//     }    
+    
+//   });
+   
+// });
+
 app.put("/tasks/:taskId", function (request, response) {
   const taskId = request.params.taskId;
-  const updatedTask = request.body.taskDescription;
-  //const updatedTask = request.body.text;
-  connection.query("UPDATE task SET completed = ? WHERE taskId = ?", [0, taskId], function (err, data) {
+  const updatedTask = request.body.completed;
+  //const dateCreated = request.body.date;
+  //const userId = request.body.userId;
+  connection.query("UPDATE task SET completed = ? WHERE taskId = ?", [updatedTask, taskId], function (err, data) {
     if (err) {
       console.log("Error updating task with id " + taskId, err);
       response.status(500).json({
